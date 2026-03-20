@@ -1,11 +1,10 @@
 {
   "name": "noisygirls-daily",
   "version": "1.0.0",
-  "description": "Noisy Girls Daily Feed",
+  "engines": {
+    "node": "24.x"
+  },
   "dependencies": {
     "xml2js": "^0.6.2"
-  },
-  "engines": {
-    "node": "18.x"
   }
 }
