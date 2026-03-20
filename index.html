@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Noisy Girls — Daily Feed</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root { --pink:#FF2D6B; --black:#0a0a0a; --white:#FAFAF8; --grey:#888; --border:#E8E6E2; --light:#F4F3F1; }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--white);font-family:'DM Sans',sans-serif;color:var(--black);min-height:100vh}
+  header{background:var(--black);padding:0 28px;border-bottom:3px solid var(--pink);position:sticky;top:0;z-index:100}
+  .header-inner{max-width:1140px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:60px}
+  .logo{font-family:'Playfair Display',serif;font-size:21px;font-weight:900;color:white;letter-spacing:-0.02em}
+  .logo span{color:var(--pink)}
+  .logo sub{font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:#444;font-weight:300;vertical-align:middle;margin-left:6px;font-family:'DM Sans',sans-serif}
+  .hdate{font-size:10px;color:#444;letter-spacing:0.12em;text-transform:uppercase}
+  .hcount{font-size:10px;color:#333}
+  .hcount strong{color:var(--pink)}
+  .filter-bar{background:white;border-bottom:1px solid var(--border);padding:0 28px;position:sticky;top:63px;z-index:99}
+  .filter-inner{max-width:1140px;margin:0 auto;display:flex;overflow-x:auto;scrollbar-width:none}
+  .filter-inner::-webkit-scrollbar{display:none}
+  .ftab{background:none;border:none;border-bottom:3px solid transparent;padding:13px 16px;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;color:var(--grey);cursor:pointer;white-space:nowrap;letter-spacing:0.09em;text-transform:uppercase;transition:all 0.18s;margin-bottom:-1px}
+  .ftab:hover{color:var(--black)}
+  .ftab.active{color:var(--pink);border-bottom-color:var(--pink)}
+  .badge{display:inline-block;background:var(--light);color:var(--grey);font-size:9px;padding:1px 5px;border-radius:10px;margin-left:4px;font-weight:400}
+  .ftab.active .badge{background:#ffe0ea;color:var(--pink)}
+  main{max-width:1140px;margin:0 auto;padding:22px 28px 60px}
+  .top-bar{display:flex;gap:10px;margin-bottom:18px}
+  .search-wrap{flex:1;position:relative}
+  .search-wrap svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:14px;height:14px;opacity:0.35}
+  .search-input{width:100%;padding:11px 14px 11px 34px;border:1.5px solid var(--border);border-radius:3px;font-family:'DM Sans',sans-serif;font-size:13px;outline:none;transition:border-color 0.2s;background:white}
+  .search-input:focus{border-color:var(--pink)}
+  .search-input::placeholder{color:#c8c5c0}
+  .refresh-btn{background:var(--pink);color:white;border:none;padding:11px 22px;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;letter-spacing:0.09em;text-transform:uppercase;cursor:pointer;border-radius:3px;transition:opacity 0.2s;white-space:nowrap}
+  .refresh-btn:hover{opacity:0.85}
+  .refresh-btn:disabled{opacity:0.45;cursor:not-allowed}
+  .loading-screen{text-align:center;padding:90px 20px}
+  .spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--pink);border-radius:50%;animation:spin 0.75s linear infinite;margin:0 auto 22px}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .loading-title{font-family:'Playfair Display',serif;font-size:24px;font-weight:900;margin-bottom:8px}
+  .loading-title span{color:var(--pink)}
+  .loading-sub{font-size:12px;color:var(--grey);line-height:1.8;max-width:320px;margin:0 auto}
+  .grid{display:none;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:16px}
+  .card{background:white;border:1px solid var(--border);border-radius:3px;overflow:hidden;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;animation:fadeUp 0.35s ease forwards;opacity:0;display:flex;flex-direction:column}
+  .card:hover{transform:translateY(-4px);box-shadow:0 12px 28px rgba(0,0,0,0.08)}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+  .card-top{padding:9px 13px;background:var(--light);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .card-source{font-size:10px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:#555}
+  .card-cat{font-size:9px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:white;padding:2px 7px;border-radius:2px;flex-shrink:0}
+  .card-body{padding:14px 14px 10px;flex:1;display:flex;flex-direction:column;gap:7px}
+  .card-title{font-family:'Playfair Display',serif;font-size:14.5px;font-weight:700;line-height:1.45;color:var(--black);text-decoration:none;display:block}
+  .card-title:hover{color:var(--pink)}
+  .card-desc{font-size:12px;color:#777;line-height:1.65;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .card-footer{padding:9px 13px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;margin-top:auto}
+  .card-time{font-size:10px;color:#bbb}
+  .save-btn{background:none;border:1px solid var(--border);padding:3px 10px;font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;color:var(--grey);cursor:pointer;border-radius:2px;transition:all 0.18s;text-transform:uppercase;letter-spacing:0.06em}
+  .save-btn:hover,.save-btn.saved{background:var(--pink);border-color:var(--pink);color:white}
+  .saved-section{display:none}
+  .saved-section.show{display:block}
+  .section-title{font-family:'Playfair Display',serif;font-size:26px;font-weight:900;margin-bottom:20px}
+  .section-title span{color:var(--pink)}
+  .saved-item{background:white;border:1px solid var(--border);border-left:3px solid var(--pink);padding:14px 16px;border-radius:3px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:10px}
+  .saved-src{font-size:10px;color:var(--pink);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;font-weight:500}
+  .saved-link{font-family:'Playfair Display',serif;font-size:14px;color:var(--black);text-decoration:none;line-height:1.4}
+  .saved-link:hover{color:var(--pink)}
+  .remove-btn{background:none;border:none;color:#ccc;cursor:pointer;font-size:22px;line-height:1;flex-shrink:0;transition:color 0.2s;padding:0 2px}
+  .remove-btn:hover{color:var(--pink)}
+  .empty-state{text-align:center;padding:70px 20px}
+  .empty-state strong{display:block;font-family:'Playfair Display',serif;font-size:22px;color:var(--black);margin-bottom:10px}
+  .empty-state p{font-size:13px;color:var(--grey);line-height:1.7}
+  .result-meta{font-size:11px;color:var(--grey);margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border);display:none}
+  .result-meta strong{color:var(--black)}
+  @media(max-width:640px){header,.filter-bar{padding:0 16px}main{padding:14px 16px 50px}.grid{grid-template-columns:1fr}.logo sub{display:none}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo">NOISY<span>GIRLS</span><sub>Daily</sub></div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px">
+      <div class="hdate" id="dateEl"></div>
+      <div class="hcount" id="countEl" style="display:none"><strong id="countNum">0</strong> articles</div>
+    </div>
+  </div>
+</header>
+
+<div class="filter-bar">
+  <div class="filter-inner">
+    <button class="ftab active" onclick="setTab('all',this)">All <span class="badge" id="badge-all">—</span></button>
+    <button class="ftab" onclick="setTab('culture',this)">Culture <span class="badge" id="badge-culture">—</span></button>
+    <button class="ftab" onclick="setTab('lifestyle',this)">Lifestyle <span class="badge" id="badge-lifestyle">—</span></button>
+    <button class="ftab" onclick="setTab('news',this)">News <span class="badge" id="badge-news">—</span></button>
+    <button class="ftab" onclick="setTab('fashion',this)">Fashion <span class="badge" id="badge-fashion">—</span></button>
+    <button class="ftab" onclick="setTab('weird',this)">Weird &amp; Interesting <span class="badge" id="badge-weird">—</span></button>
+    <button class="ftab" onclick="setTab('saved',this)">Saved ★ <span class="badge" id="badge-saved">0</span></button>
+  </div>
+</div>
+
+<main>
+  <div class="top-bar">
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input class="search-input" id="searchEl" placeholder="Search all articles..." oninput="doSearch(this.value)">
+    </div>
+    <button class="refresh-btn" id="refreshBtn" onclick="loadFeed()">↻ Refresh</button>
+  </div>
+  <div class="result-meta" id="resultMeta"></div>
+  <div id="loadingScreen" class="loading-screen">
+    <div class="spinner"></div>
+    <div class="loading-title">Fetching your <span>daily feed</span></div>
+    <div class="loading-sub">Pulling from Guardian, BBC, Daily Mail, Vogue, Page Six, The Cut, Vanity Fair and 11 more...</div>
+  </div>
+  <div class="grid" id="grid"></div>
+  <div class="saved-section" id="savedSection">
+    <div class="section-title">Your <span>Saved</span> Articles</div>
+    <div id="savedList"></div>
+  </div>
+</main>
+
+<script>
+const CAT_COLORS={culture:'#7B2D8B',lifestyle:'#E8721C',news:'#1565C0',fashion:'#AD1457',weird:'#00796B'};
+let allArticles=[],currentTab='all',currentSearch='',saved=[];
+try{saved=JSON.parse(localStorage.getItem('ng_saved_v5')||'[]')}catch(e){saved=[]}
+
+document.getElementById('dateEl').textContent=new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+
+function timeAgo(d){if(!d)return '';const diff=Math.floor((Date.now()-new Date(d))/1000);if(isNaN(diff)||diff<0)return '';if(diff<60)return 'just now';if(diff<3600)return Math.floor(diff/60)+'m ago';if(diff<86400)return Math.floor(diff/3600)+'h ago';return Math.floor(diff/86400)+'d ago'}
+function isSaved(link){return saved.some(a=>a.link===link)}
+function persist(){try{localStorage.setItem('ng_saved_v5',JSON.stringify(saved))}catch(e){}}
+
+function toggleSave(link,btn){
+  if(isSaved(link)){saved=saved.filter(a=>a.link!==link);btn.textContent='Save';btn.classList.remove('saved')}
+  else{const art=allArticles.find(a=>a.link===link);if(art)saved.unshift(art);btn.textContent='Saved ★';btn.classList.add('saved')}
+  persist();updateBadges();if(currentTab==='saved')renderSaved()
+}
+
+function updateBadges(){
+  const counts={};
+  allArticles.forEach(a=>{counts.all=(counts.all||0)+1;counts[a.cat]=(counts[a.cat]||0)+1});
+  ['all','culture','lifestyle','news','fashion','weird'].forEach(c=>{const el=document.getElementById('badge-'+c);if(el)el.textContent=counts[c]||0});
+  const sb=document.getElementById('badge-saved');if(sb)sb.textContent=saved.length;
+}
+
+function makeCard(article,i){
+  const color=CAT_COLORS[article.cat]||'#666';const sv=isSaved(article.link);
+  const card=document.createElement('div');card.className='card';
+  card.style.animationDelay=Math.min(i*0.025,0.7)+'s';
+  card.innerHTML=`<div class="card-top"><span class="card-source">${article.source}</span><span class="card-cat" style="background:${color}">${article.cat}</span></div><div class="card-body"><a class="card-title" href="${article.link}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${article.title}</a>${article.desc?`<div class="card-desc">${article.desc}</div>`:''}</div><div class="card-footer"><span class="card-time">${timeAgo(article.pubDate)}</span><button class="save-btn ${sv?'saved':''}" onclick="event.stopPropagation();toggleSave(${JSON.stringify(article.link)},this)">${sv?'Saved ★':'Save'}</button></div>`;
+  card.addEventListener('click',()=>window.open(article.link,'_blank'));
+  return card;
+}
+
+function getFiltered(){
+  return allArticles.filter(a=>{
+    const matchTab=currentTab==='all'||a.cat===currentTab;
+    const q=currentSearch.toLowerCase();
+    return matchTab&&(!q||a.title.toLowerCase().includes(q)||(a.desc&&a.desc.toLowerCase().includes(q))||a.source.toLowerCase().includes(q));
+  });
+}
+
+function render(){
+  const grid=document.getElementById('grid'),articles=getFiltered();grid.innerHTML='';
+  const meta=document.getElementById('resultMeta');
+  if(articles.length){meta.style.display='block';meta.innerHTML=`Showing <strong>${articles.length}</strong> articles from <strong>${[...new Set(articles.map(a=>a.source))].length}</strong> sources`}
+  else meta.style.display='none';
+  if(!articles.length){grid.innerHTML=`<div style="grid-column:1/-1"><div class="empty-state"><strong>Nothing found</strong><p>Try a different filter, clear your search, or hit Refresh.</p></div></div>`;return}
+  articles.forEach((a,i)=>grid.appendChild(makeCard(a,i)));
+}
+
+function renderSaved(){
+  const list=document.getElementById('savedList');document.getElementById('resultMeta').style.display='none';
+  if(!saved.length){list.innerHTML=`<div class="empty-state"><strong>Nothing saved yet</strong><p>Hit Save on articles that catch your eye — they'll live here ready for your next recording session with Siobhan.</p></div>`;return}
+  list.innerHTML=saved.map(a=>`<div class="saved-item"><div style="flex:1"><div class="saved-src">${a.source}</div><a class="saved-link" href="${a.link}" target="_blank" rel="noopener">${a.title}</a></div><button class="remove-btn" onclick="removeSaved(${JSON.stringify(a.link)})" title="Remove">×</button></div>`).join('');
+}
+
+function removeSaved(link){saved=saved.filter(a=>a.link!==link);persist();updateBadges();renderSaved()}
+
+function setTab(tab,btn){
+  currentTab=tab;document.querySelectorAll('.ftab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
+  const grid=document.getElementById('grid'),sv=document.getElementById('savedSection');
+  if(tab==='saved'){grid.style.display='none';sv.classList.add('show');renderSaved()}
+  else{grid.style.display='grid';sv.classList.remove('show');render()}
+}
+
+function doSearch(val){currentSearch=val;if(currentTab!=='saved')render()}
+
+async function loadFeed(){
+  const btn=document.getElementById('refreshBtn');
+  btn.disabled=true;btn.textContent='Loading...';
+  document.getElementById('loadingScreen').style.display='block';
+  document.getElementById('grid').style.display='none';
+  document.getElementById('resultMeta').style.display='none';
+  document.getElementById('savedSection').classList.remove('show');
+  allArticles=[];
+  try{
+    const res=await fetch('/api/feed');
+    if(!res.ok)throw new Error('HTTP '+res.status);
+    const data=await res.json();
+    if(data.articles&&data.articles.length>0){
+      allArticles=data.articles;
+      document.getElementById('loadingScreen').style.display='none';
+      document.getElementById('grid').style.display='grid';
+      document.getElementById('countEl').style.display='block';
+      document.getElementById('countNum').textContent=allArticles.length;
+      updateBadges();render();
+    }else throw new Error('No articles');
+  }catch(e){
+    document.getElementById('loadingScreen').style.display='none';
+    document.getElementById('grid').style.display='grid';
+    document.getElementById('grid').innerHTML=`<div style="grid-column:1/-1"><div class="empty-state"><strong>Couldn't load articles</strong><p>Something went wrong fetching the feed.<br><br><button onclick="loadFeed()" style="background:var(--pink);color:white;border:none;padding:9px 20px;cursor:pointer;border-radius:2px;font-family:'DM Sans',sans-serif;font-size:11px;text-transform:uppercase;letter-spacing:0.08em">Try Again</button></p></div></div>`;
+  }
+  btn.disabled=false;btn.textContent='↻ Refresh';
+}
+loadFeed();
+</script>
+</body>
+</html>
