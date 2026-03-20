@@ -25,4 +25,11 @@ const SOURCES = [
   { name: 'Refinery29',        url: 'https://www.refinery29.com/en-gb/rss.xml',            cat: 'lifestyle' },
   { name: 'Wired',             url: 'https://www.wired.com/feed/rss',                      cat: 'lifestyle' },
   // FASHION
-  { name: 'Vogue',             url: 'htt
+  { name: 'Vogue',             url: 'https://www.vogue.com/feed/rss',                      cat: 'fashion' },
+  { name: "Harper's Bazaar",   url: 'https://www.harpersbazaar.com/rss/all.xml/',          cat: 'fashion' },
+  // WEIRD & INTERESTING
+  { name: 'Aeon',              url: 'https://aeon.co/feed.rss',                            cat: 'weird' },
+  { name: 'Today I Found Out', url: 'https://www.todayifoundout.com/index.php/feed/',      cat: 'weird' },
+  { name: 'Our World in Data', url: 'https://ourworldindata.org/atom.xml',                 cat: 'weird' },
+  { name: 'The Conversation',  url: 'https://theconversation.com/uk/articles.atom',        cat: 'weird' },
+];
