@@ -192,6 +192,7 @@
     <button class="ftab" data-tab="news" onclick="setTab('news',this)">News <span class="count" id="count-news">—</span></button>
     <button class="ftab" data-tab="fashion" onclick="setTab('fashion',this)">Fashion <span class="count" id="count-fashion">—</span></button>
     <button class="ftab" data-tab="weird" onclick="setTab('weird',this)">Weird & Interesting <span class="count" id="count-weird">—</span></button>
+    <button class="ftab" data-tab="longform" onclick="setTab('longform',this)">Longform ★ <span class="count" id="count-longform">—</span></button>
   </div>
 </div>
 
@@ -251,7 +252,7 @@
 </main>
 
 <script>
-  const CAT_COLORS = { culture:'#7B2D8B', lifestyle:'#D4691E', news:'#1565C0', fashion:'#AD1457', weird:'#00796B' };
+  const CAT_COLORS = { culture:'#7B2D8B', lifestyle:'#D4691E', news:'#1565C0', fashion:'#AD1457', weird:'#00796B', longform:'#2C5F8A' };
 
   let allArticles = [];
   let currentTab = 'all';
@@ -439,7 +440,7 @@
     const cats = ['culture','lifestyle','news','fashion','weird'];
     const filtered = currentSearch ? allArticles.filter(a => matchesSearch(a, currentSearch)) : allArticles;
     document.getElementById('count-all').textContent = filtered.length || '—';
-    cats.forEach(c => {
+    ['culture','lifestyle','news','fashion','weird','longform'].forEach(c => {
       const el = document.getElementById('count-' + c);
       if (el) el.textContent = filtered.filter(a => a.cat === c).length || '—';
     });
