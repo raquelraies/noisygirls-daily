@@ -1,6 +1,9 @@
 {
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/$1" },
-    { "source": "/(.*)", "destination": "/index.html" }
+    { "source": "/api/feed", "destination": "/api/feed.js" },
+    { "source": "/api/saves", "destination": "/api/saves.js" },
+    { "source": "/api/zeitgeist", "destination": "/api/zeitgeist.js" },
+    { "source": "/zeitgeist", "destination": "/zeitgeist.html" },
+    { "source": "/breakdown", "destination": "/breakdown.html" }
   ]
 }
