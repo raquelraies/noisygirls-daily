@@ -15,6 +15,11 @@
     --border: #E8E6E2;
     --light: #F4F3F1;
   }
+
+  .nav-links { display:flex; gap:20px; }
+  .nav-link { font-size:10px; color:#555; text-decoration:none; letter-spacing:0.1em; text-transform:uppercase; transition:color 0.2s; font-weight:500; }
+  .nav-link:hover { color:var(--pink); }
+  .nav-link.active { color:var(--pink); }
   * { margin:0; padding:0; box-sizing:border-box; }
   body { background: var(--white); font-family: system-ui, sans-serif; color: var(--black); min-height: 100vh; -webkit-font-smoothing: antialiased; }
 
@@ -141,6 +146,16 @@
   .empty-state strong { display: block; font-family: system-ui, sans-serif; font-size: 22px; color: var(--black); margin-bottom: 8px; }
 
   @media (max-width: 640px) { header, .filter-bar, .session-bar { padding: 0 16px; } main { padding: 16px 16px 40px; } .grid { grid-template-columns: 1fr; } }
+
+  .add-article-form { margin-top: 24px; padding: 18px 20px; background: white; border: 1px solid var(--border); border-radius: 3px; }
+  .add-article-title { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--grey); margin-bottom: 12px; }
+  .add-article-inputs { display: flex; gap: 8px; flex-wrap: wrap; }
+  .add-article-inputs input { flex: 1; min-width: 160px; padding: 9px 12px; border: 1.5px solid var(--border); border-radius: 2px; font-family: system-ui, sans-serif; font-size: 13px; color: var(--black); background: var(--light); }
+  .add-article-inputs input:focus { outline: none; border-color: var(--pink); background: white; }
+  .add-article-inputs input::placeholder { color: #bbb; }
+  .add-article-btn { background: var(--pink); color: white; border: none; padding: 9px 18px; font-family: system-ui, sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; border-radius: 2px; white-space: nowrap; transition: opacity 0.2s; }
+  .add-article-btn:hover { opacity: 0.85; }
+  .add-article-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 </style>
 </head>
 <body>
@@ -220,8 +235,17 @@
         <div id="siobhanList"></div>
       </div>
     </div>
-    <div style="margin-top: 20px;">
+    <div style="margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
       <button class="refresh-btn" style="width:auto;" onclick="loadBoard()"><span>↻</span> Refresh board</button>
+    </div>
+
+    <div class="add-article-form" id="addArticleForm">
+      <div class="add-article-title">Add an article from anywhere</div>
+      <div class="add-article-inputs">
+        <input type="text" id="addTitle" placeholder="Article headline or title..." style="flex: 2;">
+        <input type="url" id="addUrl" placeholder="Paste the URL...">
+        <button class="add-article-btn" id="addBtn" onclick="addCustomArticle()">+ Add to board</button>
+      </div>
     </div>
   </div>
 </main>
@@ -515,6 +539,37 @@
   function escAttr(s) { return String(s||'').replace(/"/g,'&quot;'); }
 
   loadFeed();
+
+  async function addCustomArticle() {
+    const title = document.getElementById('addTitle').value.trim();
+    const url = document.getElementById('addUrl').value.trim();
+    if (!title) { document.getElementById('addTitle').focus(); return; }
+    if (!url) { document.getElementById('addUrl').focus(); return; }
+
+    const btn = document.getElementById('addBtn');
+    btn.disabled = true; btn.textContent = 'Adding...';
+
+    const article = {
+      title,
+      link: url,
+      url,
+      source: 'Added manually',
+      cat: 'culture',
+      desc: '',
+      who: currentWho,
+      savedAt: new Date().toISOString(),
+    };
+
+    const ok = await saveToBoard(article);
+    if (ok) {
+      document.getElementById('addTitle').value = '';
+      document.getElementById('addUrl').value = '';
+      if (document.getElementById('boardView').classList.contains('show')) renderBoard();
+    }
+
+    btn.disabled = false; btn.textContent = '+ Add to board';
+  }
+
 </script>
 </body>
 </html>
