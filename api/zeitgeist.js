@@ -10,7 +10,7 @@ function fetchUrl(url, redirects, customHeaders) {
     const req = client.get(url, {
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        'Accept': 'application/json, application/xml, text/html, */*',
+        'Accept': 'application/rss+xml, application/xml, text/html, */*',
         'Accept-Language': 'en-GB,en;q=0.9',
         ...(customHeaders || {}),
       },
@@ -53,27 +53,31 @@ const SUBREDDITS = [
 
 async function fetchReddit(sub) {
   try {
-    const raw = await fetchUrl(
-      `https://www.reddit.com/r/${sub.name}/hot.json?limit=8&raw_json=1`,
-      0,
-      { 'Accept': 'application/json' }
-    );
-    const data = JSON.parse(raw);
-    if (!data.data || !data.data.children) return [];
-    return data.data.children
-      .filter(p => !p.data.stickied && p.data.score > 30 && !p.data.is_video)
-      .slice(0, 5)
-      .map(p => ({
-        title: p.data.title,
-        score: p.data.score,
-        comments: p.data.num_comments,
-        url: `https://reddit.com${p.data.permalink}`,
+    const xml = await fetchUrl(`https://www.reddit.com/r/${sub.name}/hot/.rss?limit=8`);
+    const parsed = await parseStringPromise(xml, { explicitArray: false, ignoreAttrs: false, explicitCharkey: true });
+    const entries = parsed.feed?.entry || [];
+    const items = Array.isArray(entries) ? entries : [entries];
+    return items.slice(0, 5).map(e => {
+      const title = typeof e.title === 'object' ? e.title._ : e.title || '';
+      const link = Array.isArray(e.link) ? e.link[0]?.$.href : e.link?.$.href || '';
+      const updated = e.updated || '';
+      const content = typeof e.content === 'object' ? e.content._ : e.content || '';
+      const scoreMatch = content.match(/(\d+) point/);
+      const commentMatch = content.match(/(\d+) comment/);
+      const score = scoreMatch ? parseInt(scoreMatch[1]) : 50;
+      const comments = commentMatch ? parseInt(commentMatch[1]) : 0;
+      return {
+        title: title.trim(),
+        score,
+        comments,
+        url: link || `https://reddit.com/r/${sub.name}`,
         cat: sub.cat,
         source: `r/${sub.name}`,
-        created: new Date(p.data.created_utc * 1000).toISOString(),
+        created: updated,
         type: 'reddit',
-        heat: p.data.score + (p.data.num_comments * 3),
-      }));
+        heat: score + (comments * 3),
+      };
+    }).filter(p => p.title && p.heat > 10);
   } catch(e) {
     return [];
   }
