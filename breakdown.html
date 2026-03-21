@@ -4,111 +4,130 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Noisy Girls — Article Breakdown</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   :root { --pink:#FF2D6B; --pink-dim:#CC2456; --black:#0a0a0a; --white:#FAFAF8; --grey:#888; --border:#E8E6E2; --light:#F4F3F1; }
   * { margin:0; padding:0; box-sizing:border-box; }
-  body { background:var(--white); font-family:'DM Sans',sans-serif; color:var(--black); min-height:100vh; -webkit-font-smoothing:antialiased; }
+  body { background:var(--white); font-family:system-ui,sans-serif; color:var(--black); min-height:100vh; -webkit-font-smoothing:antialiased; }
+
+  .nav-links { display:flex; gap:20px; }
+  .nav-link { font-size:10px; color:#555; text-decoration:none; letter-spacing:0.1em; text-transform:uppercase; transition:color 0.2s; font-weight:500; }
+  .nav-link:hover, .nav-link.active { color:var(--pink); }
 
   header { background:var(--black); padding:0 28px; border-bottom:3px solid var(--pink); }
-  .header-inner { max-width:760px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; height:60px; }
-  .logo { font-family:'Playfair Display',serif; font-size:21px; font-weight:900; color:white; text-decoration:none; }
+  .header-inner { max-width:800px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; height:60px; }
+  .logo { font-family:system-ui,sans-serif; font-size:21px; font-weight:600; color:white; text-decoration:none; display:block; }
   .logo span { color:var(--pink); }
   .logo-sub { font-size:9px; color:#444; letter-spacing:0.2em; text-transform:uppercase; display:block; margin-top:-2px; }
-  .back-link { font-size:11px; color:#555; text-decoration:none; letter-spacing:0.1em; text-transform:uppercase; transition:color 0.2s; }
-  .back-link:hover { color:var(--pink); }
 
-  main { max-width:760px; margin:0 auto; padding:40px 28px 80px; }
+  main { max-width:800px; margin:0 auto; padding:36px 28px 80px; }
+  .page-title { font-size:28px; font-weight:600; margin-bottom:6px; }
+  .page-title em { color:var(--pink); font-style:normal; }
+  .page-sub { font-size:13px; color:var(--grey); line-height:1.7; margin-bottom:28px; max-width:560px; }
 
-  .page-title { font-family:'Playfair Display',serif; font-size:32px; font-weight:900; margin-bottom:6px; }
-  .page-title em { color:var(--pink); font-style:italic; }
-  .page-sub { font-size:13px; color:var(--grey); line-height:1.7; margin-bottom:32px; max-width:540px; }
-
-  .article-input-wrap { margin-bottom:28px; }
   .input-label { font-size:10px; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:var(--grey); margin-bottom:8px; display:block; }
-  textarea {
-    width:100%; padding:14px 16px; border:1.5px solid var(--border); border-radius:3px;
-    font-family:'DM Sans',sans-serif; font-size:14px; color:var(--black);
-    background:white; resize:vertical; line-height:1.65; min-height:80px;
+  textarea, input[type=text] {
+    width:100%; padding:13px 15px; border:1.5px solid var(--border); border-radius:3px;
+    font-family:system-ui,sans-serif; font-size:14px; color:var(--black);
+    background:white; resize:vertical; line-height:1.65;
   }
-  textarea:focus { outline:none; border-color:var(--pink); }
-  textarea::placeholder { color:#ccc; }
+  textarea:focus, input[type=text]:focus { outline:none; border-color:var(--pink); }
+  textarea::placeholder, input::placeholder { color:#ccc; }
+  .article-box { min-height:72px; }
 
-  .btn-row { display:flex; gap:8px; flex-wrap:wrap; }
-  .btn { padding:10px 22px; border-radius:3px; font-family:'DM Sans',sans-serif; font-size:11px; font-weight:600; cursor:pointer; letter-spacing:0.1em; text-transform:uppercase; border:1.5px solid var(--border); background:white; color:var(--grey); transition:all 0.15s; }
+  .btn-row { display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
+  .btn { padding:10px 22px; border-radius:3px; font-family:system-ui,sans-serif; font-size:11px; font-weight:600; cursor:pointer; letter-spacing:0.1em; text-transform:uppercase; border:1.5px solid var(--border); background:white; color:var(--grey); transition:all 0.15s; }
   .btn:hover { border-color:var(--black); color:var(--black); }
   .btn.primary { background:var(--pink); color:white; border-color:var(--pink); }
-  .btn.primary:hover { background:var(--pink-dim); border-color:var(--pink-dim); }
-  .btn.ghost { border-color:var(--border); }
+  .btn.primary:hover { background:var(--pink-dim); }
+  .btn:disabled { opacity:0.45; cursor:not-allowed; }
 
-  .progress-track { display:flex; gap:6px; margin:28px 0 24px; }
+  /* ANALYSIS PANEL */
+  .analysis-panel { display:none; margin-top:28px; border:1px solid var(--border); border-radius:4px; overflow:hidden; }
+  .analysis-panel.show { display:block; }
+  .analysis-header { background:var(--black); padding:14px 20px; display:flex; align-items:center; justify-content:space-between; }
+  .analysis-header-title { font-size:12px; font-weight:600; color:white; letter-spacing:0.1em; text-transform:uppercase; }
+  .analysis-header-title em { color:var(--pink); font-style:normal; }
+  .analysis-loading { padding:32px 20px; text-align:center; }
+  .dot-spin { display:flex; gap:5px; justify-content:center; margin-bottom:12px; }
+  .dot-spin span { width:7px; height:7px; border-radius:50%; background:var(--pink); animation:dotpulse 1.2s infinite; }
+  .dot-spin span:nth-child(2) { animation-delay:0.2s; }
+  .dot-spin span:nth-child(3) { animation-delay:0.4s; }
+  @keyframes dotpulse { 0%,80%,100%{opacity:0.2;transform:scale(0.8)} 40%{opacity:1;transform:scale(1)} }
+  .loading-text { font-size:12px; color:var(--grey); font-style:italic; }
+
+  .analysis-body { padding:0; }
+  .analysis-section { padding:18px 20px; border-bottom:1px solid var(--border); }
+  .analysis-section:last-child { border-bottom:none; }
+  .analysis-section-label { font-size:9px; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; color:var(--pink); margin-bottom:10px; }
+  .analysis-text { font-size:14px; line-height:1.7; color:var(--black); }
+  .analysis-text strong { font-weight:600; }
+
+  .highlights-list { list-style:none; display:flex; flex-direction:column; gap:8px; margin-top:4px; }
+  .highlights-list li { padding:10px 14px; background:var(--light); border-left:3px solid var(--pink); border-radius:0 3px 3px 0; font-size:13px; line-height:1.6; color:var(--black); }
+
+  .conversation-sparks { display:flex; flex-direction:column; gap:8px; margin-top:4px; }
+  .spark { padding:12px 14px; background:white; border:1px solid var(--border); border-radius:3px; font-size:13px; line-height:1.6; cursor:pointer; transition:all 0.2s; display:flex; align-items:flex-start; gap:10px; }
+  .spark:hover { border-color:var(--pink); background:#FF2D6B08; }
+  .spark-icon { color:var(--pink); font-size:16px; flex-shrink:0; margin-top:1px; }
+  .spark-text { flex:1; }
+  .spark-label { font-size:9px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--grey); margin-bottom:3px; }
+
+  .use-analysis-row { padding:14px 20px; background:var(--light); display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+  .use-analysis-label { font-size:11px; color:var(--grey); flex:1; }
+
+  /* STEPS */
+  .steps-wrap { margin-top:28px; display:none; }
+  .steps-wrap.show { display:block; }
+  .progress-track { display:flex; gap:6px; margin-bottom:20px; }
   .prog-seg { flex:1; height:3px; border-radius:2px; background:var(--border); transition:background 0.4s; }
   .prog-seg.done { background:var(--pink); }
 
-  .steps { display:flex; flex-direction:column; gap:12px; }
-
-  .step { border:1px solid var(--border); border-radius:4px; overflow:hidden; background:white; transition:border-color 0.2s; }
+  .step { border:1px solid var(--border); border-radius:4px; overflow:hidden; background:white; margin-bottom:10px; transition:border-color 0.2s; }
   .step.active { border-color:var(--pink); }
   .step-header { display:flex; align-items:center; gap:14px; padding:14px 18px; cursor:pointer; user-select:none; }
   .step-header:hover { background:var(--light); }
   .step-num { width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:600; flex-shrink:0; background:var(--light); color:var(--grey); transition:all 0.2s; }
   .step.active .step-num { background:var(--pink); color:white; }
   .step.done .step-num { background:#00796B; color:white; }
-  .step-title-wrap { flex:1; }
-  .step-name { font-size:14px; font-weight:600; color:var(--black); }
-  .step-desc { font-size:11px; color:var(--grey); margin-top:1px; }
-  .step-chevron { font-size:10px; color:#ccc; transition:transform 0.2s; }
-  .step.open .step-chevron { transform:rotate(180deg); }
-  .step-tag { font-size:9px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; padding:3px 9px; border-radius:2px; background:var(--light); color:var(--grey); flex-shrink:0; }
+  .step-name { flex:1; font-size:14px; font-weight:600; }
+  .step-tag { font-size:9px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; padding:2px 8px; border-radius:2px; background:var(--light); color:var(--grey); flex-shrink:0; }
   .step.active .step-tag { background:#FF2D6B18; color:var(--pink); }
-  .step.done .step-tag { background:#00796B18; color:#00796B; }
-
+  .chev { font-size:10px; color:#ccc; transition:transform 0.2s; }
+  .step.open .chev { transform:rotate(180deg); }
   .step-body { display:none; padding:0 18px 18px; border-top:1px solid var(--border); }
   .step.open .step-body { display:block; }
-  .step-prompt { font-size:13px; color:var(--grey); margin:14px 0 10px; line-height:1.7; font-style:italic; }
-  .step-prompt strong { color:var(--black); font-style:normal; }
-  .step-answer { width:100%; padding:11px 14px; border:1.5px solid var(--border); border-radius:3px; font-family:'DM Sans',sans-serif; font-size:13px; color:var(--black); background:var(--light); min-height:80px; resize:vertical; line-height:1.65; transition:border-color 0.2s, background 0.2s; }
+  .step-prompt { font-size:12px; color:var(--grey); margin:12px 0 10px; line-height:1.7; font-style:italic; }
+  .step-answer { width:100%; min-height:80px; padding:10px 13px; border:1.5px solid var(--border); border-radius:3px; font-family:system-ui,sans-serif; font-size:13px; color:var(--black); background:var(--light); resize:vertical; line-height:1.65; }
   .step-answer:focus { outline:none; border-color:var(--pink); background:white; }
   .step-answer::placeholder { color:#bbb; }
+  .step-nav { display:flex; gap:8px; margin-top:12px; }
 
-  .example-box { margin-top:12px; padding:12px 14px; border-left:2px solid var(--pink); background:white; border-radius:0 3px 3px 0; }
-  .example-label { font-size:9px; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:var(--pink); margin-bottom:5px; }
-  .example-text { font-size:12px; color:var(--grey); line-height:1.7; font-style:italic; }
-
-  .step-nav { display:flex; gap:8px; margin-top:14px; }
-
-  .output-section { display:none; margin-top:32px; }
+  /* OUTPUT */
+  .output-section { display:none; margin-top:28px; }
   .output-section.show { display:block; }
-  .output-card { background:white; border:1px solid var(--border); border-radius:4px; overflow:hidden; }
+  .output-card { border:1px solid var(--border); border-radius:4px; overflow:hidden; background:white; }
   .output-top { background:var(--black); padding:14px 20px; display:flex; align-items:center; justify-content:space-between; }
-  .output-top-title { font-family:'Playfair Display',serif; font-size:16px; font-weight:700; color:white; }
-  .output-top-title em { color:var(--pink); font-style:italic; }
-  .output-actions { display:flex; gap:8px; }
-  .out-btn { background:none; border:1px solid #333; color:#888; padding:5px 14px; border-radius:2px; font-family:'DM Sans',sans-serif; font-size:10px; cursor:pointer; letter-spacing:0.08em; text-transform:uppercase; transition:all 0.15s; }
+  .output-top-title { font-size:14px; font-weight:600; color:white; }
+  .output-top-title em { color:var(--pink); font-style:normal; }
+  .out-btn { background:none; border:1px solid #333; color:#888; padding:5px 14px; border-radius:2px; font-family:system-ui,sans-serif; font-size:10px; cursor:pointer; letter-spacing:0.08em; text-transform:uppercase; transition:all 0.15s; }
   .out-btn:hover { border-color:var(--pink); color:var(--pink); }
-
-  .output-body { padding:20px; display:flex; flex-direction:column; gap:0; }
-  .out-row { padding:16px 0; border-bottom:1px solid var(--border); }
+  .output-body { padding:4px 0; }
+  .out-row { padding:14px 20px; border-bottom:1px solid var(--border); }
   .out-row:last-child { border-bottom:none; }
   .out-row-label { font-size:9px; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; color:var(--pink); margin-bottom:6px; }
-  .out-row-text { font-size:15px; color:var(--black); line-height:1.65; }
+  .out-row-text { font-size:14px; color:var(--black); line-height:1.65; }
 
-  .saved-indicator { display:none; font-size:11px; color:#00796B; margin-top:8px; }
-  .saved-indicator.show { display:block; }
-
-  .saves-list { margin-top:40px; }
-  .saves-list-title { font-family:'Playfair Display',serif; font-size:22px; font-weight:900; margin-bottom:6px; }
-  .saves-list-title em { color:var(--pink); font-style:italic; }
-  .saves-list-sub { font-size:12px; color:var(--grey); margin-bottom:18px; }
-  .saved-card { background:white; border:1px solid var(--border); border-radius:4px; padding:16px 18px; margin-bottom:10px; display:flex; justify-content:space-between; gap:14px; }
+  .saves-list { margin-top:36px; display:none; }
+  .saves-list-title { font-size:20px; font-weight:600; margin-bottom:4px; }
+  .saves-list-title em { color:var(--pink); font-style:normal; }
+  .saves-list-sub { font-size:12px; color:var(--grey); margin-bottom:16px; }
+  .saved-card { background:white; border:1px solid var(--border); border-left:3px solid var(--pink); padding:14px 16px; margin-bottom:10px; display:flex; justify-content:space-between; gap:12px; border-radius:3px; }
   .saved-card-source { font-size:10px; color:var(--pink); font-weight:600; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:4px; }
-  .saved-card-title { font-family:'Playfair Display',serif; font-size:14px; margin-bottom:8px; line-height:1.4; }
   .saved-card-points { font-size:12px; color:var(--grey); line-height:1.7; }
-  .saved-card-remove { background:none; border:none; color:#ddd; cursor:pointer; font-size:20px; flex-shrink:0; transition:color 0.2s; padding:0 4px; }
+  .saved-card-remove { background:none; border:none; color:#ddd; cursor:pointer; font-size:20px; flex-shrink:0; transition:color 0.2s; }
   .saved-card-remove:hover { color:var(--pink); }
-  .no-saves { text-align:center; padding:40px; color:var(--grey); font-size:13px; }
 
-  @media(max-width:640px) { header,main { padding-left:16px; padding-right:16px; } main { padding-top:28px; } }
+  @media(max-width:640px) { header,main { padding-left:16px; padding-right:16px; } main { padding-top:24px; } }
 </style>
 </head>
 <body>
@@ -119,50 +138,88 @@
       <div class="logo">NOISY<span>GIRLS</span></div>
       <span class="logo-sub">Article Breakdown</span>
     </a>
-    <a href="/" class="back-link">← Back to feed</a>
+    <div class="nav-links">
+      <a href="/" class="nav-link">Feed</a>
+      <a href="/zeitgeist" class="nav-link">Zeitgeist</a>
+      <a href="/breakdown" class="nav-link active">Breakdown</a>
+    </div>
   </div>
 </header>
 
 <main>
   <div class="page-title">Break it <em>down</em></div>
-  <div class="page-sub">Paste an article headline or the line that caught you. Work through the five steps. Get your talking points — without a script.</div>
+  <div class="page-sub">Paste a headline, a quote, or the whole article. Claude reads it, pulls out the highlights, and tells you exactly why it's interesting — then you make it yours.</div>
 
-  <div class="article-input-wrap">
-    <label class="input-label">Article headline or the line that got you</label>
-    <textarea id="articleIn" placeholder="Paste the headline, a stat, or just the thing that made you stop scrolling..."></textarea>
-    <div class="btn-row" style="margin-top:10px;">
-      <button class="btn primary" onclick="startBreakdown()">Start breakdown →</button>
-      <button class="btn ghost" onclick="resetAll()">Clear</button>
+  <label class="input-label">Paste the headline, a quote, or the full article text</label>
+  <textarea class="article-box" id="articleIn" placeholder="Paste anything — a headline, a paragraph, a stat, a tweet, a full article..."></textarea>
+  <div class="btn-row">
+    <button class="btn primary" id="analyseBtn" onclick="analyse()">Analyse with Claude →</button>
+    <button class="btn" onclick="resetAll()">Clear</button>
+  </div>
+
+  <!-- ANALYSIS PANEL -->
+  <div class="analysis-panel" id="analysisPanel">
+    <div class="analysis-header">
+      <div class="analysis-header-title">Claude's <em>read</em></div>
+    </div>
+    <div class="analysis-loading" id="analysisLoading">
+      <div class="dot-spin"><span></span><span></span><span></span></div>
+      <div class="loading-text" id="loadingText">Reading the article...</div>
+    </div>
+    <div class="analysis-body" id="analysisBody" style="display:none;">
+
+      <div class="analysis-section">
+        <div class="analysis-section-label">What it's actually saying</div>
+        <div class="analysis-text" id="aRealClaim"></div>
+      </div>
+
+      <div class="analysis-section">
+        <div class="analysis-section-label">The highlights worth knowing</div>
+        <ul class="highlights-list" id="aHighlights"></ul>
+      </div>
+
+      <div class="analysis-section">
+        <div class="analysis-section-label">Why this is interesting</div>
+        <div class="analysis-text" id="aWhy"></div>
+      </div>
+
+      <div class="analysis-section">
+        <div class="analysis-section-label">Conversation sparks — click any to use as your starting point</div>
+        <div class="conversation-sparks" id="aSparks"></div>
+      </div>
+
+      <div class="analysis-section">
+        <div class="analysis-section-label">The wildcard take</div>
+        <div class="analysis-text" id="aWildcard"></div>
+      </div>
+
+    </div>
+    <div class="use-analysis-row">
+      <div class="use-analysis-label">Use Claude's analysis as your starting point, or write your own below.</div>
+      <button class="btn primary" onclick="startSteps()">Build my talking points →</button>
     </div>
   </div>
 
-  <div id="progressTrack" class="progress-track" style="display:none;">
-    <div class="prog-seg" id="ps1"></div>
-    <div class="prog-seg" id="ps2"></div>
-    <div class="prog-seg" id="ps3"></div>
-    <div class="prog-seg" id="ps4"></div>
-    <div class="prog-seg" id="ps5"></div>
-  </div>
-
-  <div class="steps" id="stepsEl" style="display:none;">
+  <!-- STEPS -->
+  <div class="steps-wrap" id="stepsWrap">
+    <div class="progress-track">
+      <div class="prog-seg" id="ps1"></div>
+      <div class="prog-seg" id="ps2"></div>
+      <div class="prog-seg" id="ps3"></div>
+      <div class="prog-seg" id="ps4"></div>
+      <div class="prog-seg" id="ps5"></div>
+    </div>
 
     <div class="step active" id="s1">
       <div class="step-header" onclick="toggleStep('s1')">
         <div class="step-num">1</div>
-        <div class="step-title-wrap">
-          <div class="step-name">The real claim</div>
-          <div class="step-desc">What it's actually saying underneath the headline</div>
-        </div>
+        <div class="step-name">The real claim</div>
         <div class="step-tag">Provocation</div>
-        <div class="step-chevron">▼</div>
+        <div class="chev">▼</div>
       </div>
       <div class="step-body">
-        <div class="step-prompt">Strip the headline. What is this article <strong>actually arguing</strong>? Not a summary — the uncomfortable claim underneath it. One sentence.</div>
+        <div class="step-prompt">What is this actually arguing? Not a summary — the uncomfortable claim underneath it. One sentence in your words.</div>
         <textarea class="step-answer" id="a1" placeholder="This article is actually saying..." oninput="onAnswer(1)"></textarea>
-        <div class="example-box">
-          <div class="example-label">Example</div>
-          <div class="example-text">"This study is saying women who are ambitious are less likeable — which means the system is still designed for us to fail quietly."</div>
-        </div>
         <div class="step-nav">
           <button class="btn primary" onclick="nextStep(1)">Next →</button>
         </div>
@@ -172,22 +229,15 @@
     <div class="step" id="s2">
       <div class="step-header" onclick="toggleStep('s2')">
         <div class="step-num">2</div>
-        <div class="step-title-wrap">
-          <div class="step-name">Your gut reaction</div>
-          <div class="step-desc">Feel it before you think it</div>
-        </div>
+        <div class="step-name">Your gut reaction</div>
         <div class="step-tag">Instinct</div>
-        <div class="step-chevron">▼</div>
+        <div class="chev">▼</div>
       </div>
       <div class="step-body">
-        <div class="step-prompt">Before you analyse it — what did you <strong>feel</strong> when you read it? Annoyed? Validated? Surprised? Smug? That feeling IS the content. Start there.</div>
+        <div class="step-prompt">Before you think — what did you feel? Annoyed? Validated? Surprised? That feeling IS the content.</div>
         <textarea class="step-answer" id="a2" placeholder="My first reaction was..." oninput="onAnswer(2)"></textarea>
-        <div class="example-box">
-          <div class="example-label">Example</div>
-          <div class="example-text">"My first reaction was — of course, we already knew this. But then I got angry that we still have to keep talking about it in 2026."</div>
-        </div>
         <div class="step-nav">
-          <button class="btn ghost" onclick="prevStep(2)">← Back</button>
+          <button class="btn" onclick="prevStep(2)">← Back</button>
           <button class="btn primary" onclick="nextStep(2)">Next →</button>
         </div>
       </div>
@@ -196,22 +246,15 @@
     <div class="step" id="s3">
       <div class="step-header" onclick="toggleStep('s3')">
         <div class="step-num">3</div>
-        <div class="step-title-wrap">
-          <div class="step-name">The personal pull</div>
-          <div class="step-desc">Make it real with one specific moment</div>
-        </div>
+        <div class="step-name">The personal pull</div>
         <div class="step-tag">Lived experience</div>
-        <div class="step-chevron">▼</div>
+        <div class="chev">▼</div>
       </div>
       <div class="step-body">
-        <div class="step-prompt">Does this connect to something you've <strong>seen, lived, or noticed</strong>? One specific moment — not a lecture. The more specific, the better. Vague = boring. Specific = compelling.</div>
-        <textarea class="step-answer" id="a3" placeholder="This reminds me of the time..." oninput="onAnswer(3)"></textarea>
-        <div class="example-box">
-          <div class="example-label">Example</div>
-          <div class="example-text">"I had a client last year who literally apologised for asking for a pay rise. A man in the same role never would have. Never."</div>
-        </div>
+        <div class="step-prompt">Does this connect to something you've seen or lived? One specific moment. Vague = boring. Specific = compelling.</div>
+        <textarea class="step-answer" id="a3" placeholder="This reminds me of..." oninput="onAnswer(3)"></textarea>
         <div class="step-nav">
-          <button class="btn ghost" onclick="prevStep(3)">← Back</button>
+          <button class="btn" onclick="prevStep(3)">← Back</button>
           <button class="btn primary" onclick="nextStep(3)">Next →</button>
         </div>
       </div>
@@ -220,22 +263,15 @@
     <div class="step" id="s4">
       <div class="step-header" onclick="toggleStep('s4')">
         <div class="step-num">4</div>
-        <div class="step-title-wrap">
-          <div class="step-name">The noisy question</div>
-          <div class="step-desc">The question that starts the real conversation</div>
-        </div>
+        <div class="step-name">The noisy question</div>
         <div class="step-tag">The debate</div>
-        <div class="step-chevron">▼</div>
+        <div class="chev">▼</div>
       </div>
       <div class="step-body">
-        <div class="step-prompt">What would you actually want to <strong>argue about</strong>? Not "what do you think?" — something with an edge. Something Siobhan could genuinely push back on. Make it uncomfortable.</div>
+        <div class="step-prompt">What would you actually argue about? Something with an edge that Siobhan could push back on hard.</div>
         <textarea class="step-answer" id="a4" placeholder="The question I want to put to Siobhan is..." oninput="onAnswer(4)"></textarea>
-        <div class="example-box">
-          <div class="example-label">Example</div>
-          <div class="example-text">"Are women complicit in keeping this going? Because I think some of us absolutely are — and nobody wants to say it out loud."</div>
-        </div>
         <div class="step-nav">
-          <button class="btn ghost" onclick="prevStep(4)">← Back</button>
+          <button class="btn" onclick="prevStep(4)">← Back</button>
           <button class="btn primary" onclick="nextStep(4)">Next →</button>
         </div>
       </div>
@@ -244,27 +280,19 @@
     <div class="step" id="s5">
       <div class="step-header" onclick="toggleStep('s5')">
         <div class="step-num">5</div>
-        <div class="step-title-wrap">
-          <div class="step-name">The wildcard</div>
-          <div class="step-desc">The take that complicates everything</div>
-        </div>
+        <div class="step-name">The wildcard</div>
         <div class="step-tag">The twist</div>
-        <div class="step-chevron">▼</div>
+        <div class="chev">▼</div>
       </div>
       <div class="step-body">
-        <div class="step-prompt">The unexpected angle. The thing you almost don't want to admit. What <strong>complicates</strong> everything you just said? This is what makes the conversation unpredictable.</div>
-        <textarea class="step-answer" id="a5" placeholder="But actually, the thing I haven't said is..." oninput="onAnswer(5)"></textarea>
-        <div class="example-box">
-          <div class="example-label">Example</div>
-          <div class="example-text">"But also — is likeability even worth having? Maybe we've been optimising for the wrong metric entirely and the whole frame is broken."</div>
-        </div>
+        <div class="step-prompt">The unexpected angle. The thing you almost don't want to admit. What complicates everything you just said?</div>
+        <textarea class="step-answer" id="a5" placeholder="But actually..." oninput="onAnswer(5)"></textarea>
         <div class="step-nav">
-          <button class="btn ghost" onclick="prevStep(5)">← Back</button>
+          <button class="btn" onclick="prevStep(5)">← Back</button>
           <button class="btn primary" onclick="buildOutput()">Build my talking points →</button>
         </div>
       </div>
     </div>
-
   </div>
 
   <!-- OUTPUT -->
@@ -272,22 +300,21 @@
     <div class="output-card">
       <div class="output-top">
         <div class="output-top-title">Your <em>talking points</em></div>
-        <div class="output-actions">
+        <div style="display:flex;gap:8px;">
           <button class="out-btn" onclick="copyOutput()">Copy</button>
-          <button class="out-btn" onclick="saveBreakdown()">Save to list</button>
+          <button class="out-btn" onclick="saveBreakdown()">Save</button>
         </div>
       </div>
       <div class="output-body" id="outputBody"></div>
     </div>
-    <div class="saved-indicator" id="savedIndicator">✓ Saved to your list below</div>
   </div>
 
   <!-- SAVED LIST -->
-  <div class="saves-list" id="savesList" style="display:none;">
+  <div class="saves-list" id="savesList">
     <div class="saves-list-title">Saved <em>breakdowns</em></div>
-    <div class="saves-list-sub">Your prep notes for the next recording session. Lives here until you clear them.</div>
+    <div class="saves-list-sub">Your prep for the next recording session.</div>
     <div id="savedCardsEl"></div>
-    <button class="btn ghost" style="margin-top:8px;" onclick="clearSaved()">Clear all saved</button>
+    <button class="btn" style="margin-top:8px;" onclick="clearSaved()">Clear all</button>
   </div>
 
 </main>
@@ -301,122 +328,182 @@
     { id:'s5', ans:'a5', label:'The wildcard' },
   ];
 
+  let analysis = null;
   let savedBreakdowns = [];
-  try { savedBreakdowns = JSON.parse(localStorage.getItem('ng_breakdowns_v1') || '[]'); } catch(e) {}
+  try { savedBreakdowns = JSON.parse(localStorage.getItem('ng_breakdowns_v2') || '[]'); } catch(e) {}
 
   function saveToDisk() {
-    try { localStorage.setItem('ng_breakdowns_v1', JSON.stringify(savedBreakdowns)); } catch(e) {}
+    try { localStorage.setItem('ng_breakdowns_v2', JSON.stringify(savedBreakdowns)); } catch(e) {}
   }
 
-  function startBreakdown() {
-    const val = document.getElementById('articleIn').value.trim();
-    if (!val) { document.getElementById('articleIn').focus(); return; }
-    document.getElementById('progressTrack').style.display = 'flex';
-    document.getElementById('stepsEl').style.display = 'flex';
+  async function analyse() {
+    const article = document.getElementById('articleIn').value.trim();
+    if (!article) { document.getElementById('articleIn').focus(); return; }
+
+    const btn = document.getElementById('analyseBtn');
+    btn.disabled = true;
+
+    const panel = document.getElementById('analysisPanel');
+    const loading = document.getElementById('analysisLoading');
+    const body = document.getElementById('analysisBody');
+
+    panel.classList.add('show');
+    loading.style.display = 'block';
+    body.style.display = 'none';
+    document.getElementById('stepsWrap').classList.remove('show');
     document.getElementById('outputSection').classList.remove('show');
-    document.getElementById('s1').classList.add('open');
-    document.querySelector('#s1 .step-body').style.display = 'block';
-    document.getElementById('s1 .step-answer') && document.getElementById('a1').focus();
-    setTimeout(() => document.getElementById('stepsEl').scrollIntoView({ behavior:'smooth', block:'start' }), 100);
-    renderSavedList();
+
+    const thoughts = ['Reading the article...', 'Finding what\'s interesting...', 'Pulling out the highlights...', 'Almost there...'];
+    let ti = 0;
+    const tTimer = setInterval(() => {
+      document.getElementById('loadingText').textContent = thoughts[Math.min(ti++, thoughts.length - 1)];
+    }, 1800);
+
+    const prompt = `You are a sharp research assistant for "Noisy Girls" — a podcast by two opinionated British women who love a good argument. Analyse this article/content and return a JSON object with exactly these keys. No preamble, no markdown, just JSON.
+
+Content: "${article.slice(0, 3000)}"
+
+Return this exact JSON:
+{
+  "real_claim": "What this content is ACTUALLY arguing or revealing — one punchy sentence that goes beneath the surface. Not a summary, the uncomfortable truth of it.",
+  "highlights": ["3-5 specific facts, stats, quotes or claims from the content worth knowing — things that would make someone go 'wait, really?'. Each as a short punchy sentence."],
+  "why_interesting": "2-3 sentences on WHY this is genuinely interesting right now. What's the cultural or social nerve it touches? Why does it matter beyond the headline?",
+  "conversation_sparks": [
+    {"label": "The provocative take", "text": "A strong opinionated statement about this that someone could argue for"},
+    {"label": "The counter", "text": "The opposite view — equally defensible, genuinely interesting"},
+    {"label": "The bigger question", "text": "The wider issue this opens up — beyond just this article"},
+    {"label": "The personal angle", "text": "How this connects to something people actually experience in their own lives"}
+  ],
+  "wildcard": "The unexpected, counterintuitive, or uncomfortable angle that most people won't say. The take that complicates everything."
+}`;
+
+    try {
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 1500,
+          messages: [{ role: 'user', content: prompt }]
+        })
+      });
+
+      const data = await response.json();
+      const text = data.content?.[0]?.text || '';
+      const clean = text.replace(/```json|```/g, '').trim();
+      analysis = JSON.parse(clean);
+
+      // Populate analysis panel
+      document.getElementById('aRealClaim').textContent = analysis.real_claim || '';
+      document.getElementById('aWhy').textContent = analysis.why_interesting || '';
+      document.getElementById('aWildcard').textContent = analysis.wildcard || '';
+
+      const highlightsList = document.getElementById('aHighlights');
+      highlightsList.innerHTML = (analysis.highlights || []).map(h => `<li>${esc(h)}</li>`).join('');
+
+      const sparksEl = document.getElementById('aSparks');
+      sparksEl.innerHTML = (analysis.conversation_sparks || []).map((s, i) => `
+        <div class="spark" onclick="useSparkForStep(${i}, '${escAttr(s.text)}')">
+          <div class="spark-icon">→</div>
+          <div class="spark-text">
+            <div class="spark-label">${esc(s.label)}</div>
+            <div>${esc(s.text)}</div>
+          </div>
+        </div>`).join('');
+
+      loading.style.display = 'none';
+      body.style.display = 'block';
+
+    } catch(e) {
+      loading.innerHTML = `<div style="padding:16px;font-size:13px;color:var(--grey);">Couldn't generate analysis — you can still fill in the steps below manually.</div>`;
+      document.getElementById('stepsWrap').classList.add('show');
+    }
+
+    clearInterval(tTimer);
+    btn.disabled = false;
+    setTimeout(() => panel.scrollIntoView({ behavior:'smooth', block:'start' }), 100);
   }
 
-  function toggleStep(id) {
-    const el = document.getElementById(id);
-    el.classList.toggle('open');
+  function useSparkForStep(sparkIndex, text) {
+    // Map spark index to step
+    const stepMap = [1, 4, 4, 3]; // provocative→step1, counter→step4, bigger→step4, personal→step3
+    const stepNum = stepMap[sparkIndex] || 4;
+    document.getElementById('a' + stepNum).value = text;
+    onAnswer(stepNum);
+    startSteps();
+    setTimeout(() => {
+      openStep(stepNum);
+    }, 300);
   }
+
+  function startSteps() {
+    document.getElementById('stepsWrap').classList.add('show');
+    // Pre-fill steps from analysis if empty
+    if (analysis) {
+      if (!document.getElementById('a1').value && analysis.real_claim) {
+        document.getElementById('a1').value = analysis.real_claim;
+        onAnswer(1);
+      }
+      if (!document.getElementById('a5').value && analysis.wildcard) {
+        document.getElementById('a5').value = analysis.wildcard;
+        onAnswer(5);
+      }
+    }
+    openStep(1);
+    setTimeout(() => document.getElementById('stepsWrap').scrollIntoView({ behavior:'smooth', block:'start' }), 100);
+  }
+
+  function toggleStep(id) { document.getElementById(id).classList.toggle('open'); }
 
   function openStep(num) {
     STEPS.forEach((s, i) => {
       const el = document.getElementById(s.id);
-      if (i + 1 === num) {
-        el.classList.add('open', 'active');
-      } else {
-        el.classList.remove('open');
-      }
+      i + 1 === num ? el.classList.add('open', 'active') : el.classList.remove('open');
     });
     setTimeout(() => document.getElementById(STEPS[num-1].id).scrollIntoView({ behavior:'smooth', block:'nearest' }), 80);
   }
 
   function nextStep(num) {
-    const answer = document.getElementById('a' + num).value.trim();
-    if (answer) {
-      document.getElementById('s' + num).classList.add('done');
-      document.getElementById('ps' + num).classList.add('done');
-    }
+    const v = document.getElementById('a' + num).value.trim();
+    if (v) { document.getElementById('s' + num).classList.add('done'); document.getElementById('ps' + num).classList.add('done'); }
     if (num < 5) openStep(num + 1);
   }
 
-  function prevStep(num) {
-    openStep(num - 1);
-  }
+  function prevStep(num) { openStep(num - 1); }
 
   function onAnswer(num) {
-    const val = document.getElementById('a' + num).value.trim();
-    document.getElementById('ps' + num).classList.toggle('done', val.length > 5);
+    const v = document.getElementById('a' + num).value.trim();
+    document.getElementById('ps' + num).classList.toggle('done', v.length > 5);
   }
 
   function buildOutput() {
     const article = document.getElementById('articleIn').value.trim();
-    const answers = STEPS.map(s => ({
-      label: s.label,
-      text: document.getElementById(s.ans).value.trim(),
-    })).filter(a => a.text.length > 0);
-
+    const answers = STEPS.map(s => ({ label: s.label, text: document.getElementById(s.ans).value.trim() })).filter(a => a.text);
     if (!answers.length) return;
-
-    // Mark step 5 done
     document.getElementById('s5').classList.add('done');
     document.getElementById('ps5').classList.add('done');
-
-    const body = document.getElementById('outputBody');
     let html = '';
-    if (article) {
-      html += `<div class="out-row"><div class="out-row-label">Article</div><div class="out-row-text" style="font-size:13px;color:var(--grey);">${esc(article)}</div></div>`;
-    }
-    answers.forEach(a => {
-      html += `<div class="out-row"><div class="out-row-label">${esc(a.label)}</div><div class="out-row-text">${esc(a.text)}</div></div>`;
-    });
-    body.innerHTML = html;
-
-    const section = document.getElementById('outputSection');
-    section.classList.add('show');
-    document.getElementById('savedIndicator').classList.remove('show');
-    setTimeout(() => section.scrollIntoView({ behavior:'smooth', block:'start' }), 100);
+    if (article) html += `<div class="out-row"><div class="out-row-label">Article</div><div class="out-row-text" style="font-size:13px;color:var(--grey)">${esc(article.slice(0,200))}${article.length>200?'…':''}</div></div>`;
+    answers.forEach(a => { html += `<div class="out-row"><div class="out-row-label">${esc(a.label)}</div><div class="out-row-text">${esc(a.text)}</div></div>`; });
+    document.getElementById('outputBody').innerHTML = html;
+    document.getElementById('outputSection').classList.add('show');
+    setTimeout(() => document.getElementById('outputSection').scrollIntoView({ behavior:'smooth', block:'start' }), 100);
   }
 
   function copyOutput() {
     const article = document.getElementById('articleIn').value.trim();
-    let text = article ? `ARTICLE\n${article}\n\n` : '';
-    STEPS.forEach(s => {
-      const val = document.getElementById(s.ans).value.trim();
-      if (val) text += `${s.label.toUpperCase()}\n${val}\n\n`;
-    });
-    navigator.clipboard.writeText(text.trim()).then(() => {
-      const btn = event.target;
-      btn.textContent = 'Copied!';
-      setTimeout(() => btn.textContent = 'Copy', 2000);
-    });
+    let t = article ? `ARTICLE\n${article.slice(0,300)}\n\n` : '';
+    STEPS.forEach(s => { const v = document.getElementById(s.ans).value.trim(); if(v) t += `${s.label.toUpperCase()}\n${v}\n\n`; });
+    navigator.clipboard.writeText(t.trim()).then(() => { const b = event.target; b.textContent='Copied!'; setTimeout(()=>b.textContent='Copy',2000); });
   }
 
   function saveBreakdown() {
     const article = document.getElementById('articleIn').value.trim();
-    const answers = STEPS.map(s => ({
-      label: s.label,
-      text: document.getElementById(s.ans).value.trim(),
-    })).filter(a => a.text.length > 0);
-
+    const answers = STEPS.map(s => ({ label: s.label, text: document.getElementById(s.ans).value.trim() })).filter(a => a.text);
     if (!answers.length) return;
-
-    savedBreakdowns.unshift({
-      id: Date.now(),
-      article,
-      answers,
-      savedAt: new Date().toISOString(),
-    });
+    savedBreakdowns.unshift({ id: Date.now(), article, answers, analysis, savedAt: new Date().toISOString() });
     if (savedBreakdowns.length > 20) savedBreakdowns.splice(20);
     saveToDisk();
-    document.getElementById('savedIndicator').classList.add('show');
     renderSavedList();
   }
 
@@ -428,8 +515,8 @@
     cards.innerHTML = savedBreakdowns.map(b => `
       <div class="saved-card">
         <div style="flex:1;min-width:0;">
-          ${b.article ? `<div class="saved-card-source">${esc(b.article.slice(0,80))}${b.article.length > 80 ? '…' : ''}</div>` : ''}
-          <div class="saved-card-points">${b.answers.map(a => `<strong>${esc(a.label)}:</strong> ${esc(a.text.slice(0,120))}${a.text.length > 120 ? '…' : ''}`).join('<br>')}</div>
+          ${b.article ? `<div class="saved-card-source">${esc(b.article.slice(0,80))}${b.article.length>80?'…':''}</div>` : ''}
+          <div class="saved-card-points">${b.answers.map(a => `<strong>${esc(a.label)}:</strong> ${esc(a.text.slice(0,100))}${a.text.length>100?'…':''}`).join('<br>')}</div>
         </div>
         <button class="saved-card-remove" onclick="removeBreakdown(${b.id})">×</button>
       </div>`).join('');
@@ -437,34 +524,32 @@
 
   function removeBreakdown(id) {
     savedBreakdowns = savedBreakdowns.filter(b => b.id !== id);
-    saveToDisk();
-    renderSavedList();
+    saveToDisk(); renderSavedList();
   }
 
   function clearSaved() {
-    if (confirm('Clear all saved breakdowns?')) {
-      savedBreakdowns = [];
-      saveToDisk();
-      renderSavedList();
-    }
+    if (confirm('Clear all saved breakdowns?')) { savedBreakdowns = []; saveToDisk(); renderSavedList(); }
   }
 
   function resetAll() {
     document.getElementById('articleIn').value = '';
-    STEPS.forEach(s => {
+    document.getElementById('analysisPanel').classList.remove('show');
+    document.getElementById('analysisBody').style.display = 'none';
+    document.getElementById('analysisLoading').style.display = 'block';
+    document.getElementById('stepsWrap').classList.remove('show');
+    document.getElementById('outputSection').classList.remove('show');
+    STEPS.forEach((s, i) => {
       document.getElementById(s.ans).value = '';
       const el = document.getElementById(s.id);
       el.classList.remove('open','active','done');
-      document.getElementById('ps' + (STEPS.indexOf(s)+1)).classList.remove('done');
+      document.getElementById('ps' + (i+1)).classList.remove('done');
     });
     document.getElementById('s1').classList.add('active');
-    document.getElementById('progressTrack').style.display = 'none';
-    document.getElementById('stepsEl').style.display = 'none';
-    document.getElementById('outputSection').classList.remove('show');
-    document.getElementById('savedIndicator').classList.remove('show');
+    analysis = null;
   }
 
   function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function escAttr(s) { return String(s||'').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
 
   renderSavedList();
 </script>
