@@ -122,16 +122,16 @@
 
 <div class="hero">
   <div class="hero-inner">
-    <div class="hero-title">What women are talking about <em>right now</em></div>
-    <div class="hero-sub">Live pulse from Reddit's most active women's communities, Google's trending searches, and the podcasts climbing the charts. Updated every 10 minutes.</div>
-    <div class="hero-meta">Sources: <span>15 subreddits · Google Trends UK · Apple Podcast charts</span></div>
+    <div class="hero-title">What everyone is talking about <em>right now</em></div>
+    <div class="hero-sub">Live pulse from Reddit's most talked-about communities, breaking news from UK and US sources, and the podcasts climbing the charts. Conversation starters, not a gender filter. Updated every 10 minutes.</div>
+    <div class="hero-meta">Sources: <span>20 subreddits · 15 news sources UK &amp; US · Apple Podcast charts UK &amp; US</span></div>
   </div>
 </div>
 
 <div class="filter-bar">
   <div class="filter-inner">
     <button class="ftab active" data-tab="all" onclick="setTab('all',this)">All <span class="ct" id="ct-all">—</span></button>
-    <button class="ftab" data-tab="women" onclick="setTab('women',this)">Women <span class="ct" id="ct-women">—</span></button>
+    
     <button class="ftab" data-tab="culture" onclick="setTab('culture',this)">Culture <span class="ct" id="ct-culture">—</span></button>
     <button class="ftab" data-tab="work" onclick="setTab('work',this)">Work <span class="ct" id="ct-work">—</span></button>
     <button class="ftab" data-tab="relationships" onclick="setTab('relationships',this)">Relationships <span class="ct" id="ct-relationships">—</span></button>
@@ -259,7 +259,7 @@
       html += `
         <div class="section">
           <div class="section-header">
-            <div class="section-title"><strong>Reddit</strong> — what women are actually talking about</div>
+            <div class="section-title"><strong>Reddit</strong> — what people are actually talking about</div>
             <div class="section-count">${reddit.length} posts · sorted by heat</div>
           </div>
           <div class="cards-grid">
